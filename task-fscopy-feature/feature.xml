@@ -10,7 +10,7 @@
     Eike Stepper - initial API and implementation
 -->
 <feature
-      id="task-fscopy"
+      id="com.github.maybeec.oomph.task.fscopy.feature"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName">
@@ -33,14 +33,14 @@
    </url>
 
    <plugin
-         id="task-fscopy"
+         id="com.github.maybeec.oomph.task.fscopy"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="task-fscopy.edit"
+         id="com.github.maybeec.oomph.task.fscopy.edit"
          download-size="0"
          install-size="0"
          version="0.0.0"
