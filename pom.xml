@@ -54,10 +54,10 @@
   </properties>
 
   <modules>
-    <module>task-copy</module>
-    <module>task-copy.edit</module>
-    <module>task-copy-feature</module>
-    <module>task-copy-updatesite</module>
+    <module>task-fscopy</module>
+    <module>task-fscopy.edit</module>
+    <module>task-fscopy-feature</module>
+    <module>task-fscopy-updatesite</module>
   </modules>
 
   <build>
