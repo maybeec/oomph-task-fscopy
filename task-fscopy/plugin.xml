@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated FSCopy -->
+      <package
+            uri="http://com.github.maybeec/task-fscopy/1.0"
+            class="com.github.maybeec.oomph.task.fscopy.FSCopyPackage"
+            genModel="model/FSCopy.genmodel"/>
+   </extension>
+
+</plugin>
