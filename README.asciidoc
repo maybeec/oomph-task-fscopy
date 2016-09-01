@@ -1,0 +1,36 @@
+= Oomph Command Line Interface Setup Task
+
+== Purpose
+The `oomph-cli-task` is an extension for the https://projects.eclipse.org/proposals/oomph[Eclipse Oomph Installer] that allows to access the command line during the setup. The `cliTask` works as a wrapper for the `java.lang.ProcessBuilder`.
+
+== Restrictions
+At the moment this extension works only on the Windows OS. A setup task for Linux and OSX is planned.
+
+== Usage
+
+* Include `http://www.example.org/CommandLine/1.0 https://raw.githubusercontent.com/maybeec/oomph-task-cli/master/task-cli-updatesite/model/Oomph-cli-task-1.0.ecore` at `xsi:schemaLocation` in your Setup file so that the oomph installer can find the required packages.
+
+[WARNING]
+====
+Alpha Relase is now public. For development of oomph product or project setup files in eclipse install the plugin from https://maybeec.github.io/oomph-task-cli/update
+====
+
+* Now you can add the following snippet to your Setup file
+[source, xml]
+<setupTask
+    xsi:type="cmd:CmdTask"
+    id="reorder.nodejs.2"
+    excludedTriggers="STARTUP"
+    command="xcopy">
+    <argument>${installation.location.win}\nodejs\App\NodeJS</argument>
+    <argument>${installation.location.win}\nodejs\</argument>
+    <argument>/E</argument>
+</setupTask>
+
+* `command` specifies the command to be executed. The command needs to be accessible from the shell independendly from the current directory the shell is executed. Local commands should be called with the full path
+* `<argument>` specifies an argument to the command. This follows the syntax the `ProcessBuilder` provides. There can be as many `<argument>` elements as needed.
+
+[CAUTION]
+====
+The Windows shell uses `/` as an identifier for command arguments. The `\` is used in paths. Consider this when accessing path variables.
+====
