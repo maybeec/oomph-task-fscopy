@@ -19,6 +19,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import com.github.maybeec.oomph.task.fscopy.FSCopyPackage;
 import com.github.maybeec.oomph.task.fscopy.FileSystemCopyTask;
+import com.github.maybeec.oomph.task.fscopy.core.FSCopyUtil;
+import com.github.maybeec.oomph.task.fscopy.core.SetupTaskLogger;
+import com.github.maybeec.oomph.task.fscopy.core.impl.FSCopyUtilImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -173,7 +176,7 @@ public class FileSystemCopyTaskImpl extends SetupTaskImpl implements FileSystemC
   @Override
   public int getPriority()
   {
-    return PRIORITY;
+    return priority;
   }
 
   /**
@@ -303,20 +306,14 @@ public class FileSystemCopyTaskImpl extends SetupTaskImpl implements FileSystemC
 
   public boolean isNeeded(SetupTaskContext context) throws Exception
   {
-    // TODO Implement FileSystemCopyTaskImpl.isNeeded()
     return true;
   }
 
   public void perform(SetupTaskContext context) throws Exception
   {
-    // TODO Implement FileSystemCopyTaskImpl.perform()
-    context.log("Implement FileSystemCopyTaskImpl.perform()");
-  }
-
-  @Override
-  public void dispose()
-  {
-    // TODO Implement FileSystemCopyTaskImpl.perform() or remove this override if not needed
+    SetupTaskLogger.getLogger().setContext(context);
+    FSCopyUtil util = new FSCopyUtilImpl();
+    util.copy(resource, destination);
   }
 
 } // FileSystemCopyTaskImpl
