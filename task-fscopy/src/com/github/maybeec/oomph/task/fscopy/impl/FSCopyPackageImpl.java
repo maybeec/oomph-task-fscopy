@@ -223,7 +223,7 @@ public class FSCopyPackageImpl extends EPackageImpl implements FSCopyPackage
         IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Create resource
-    createResource("https://raw.githubusercontent.com/maybeec/oomph-task-fsmove/master/task-fsmove-updatesite/model/Oomph-task-fscopy.ecore");
+    createResource("https://raw.githubusercontent.com/maybeec/oomph-task-fscopy/master/task-fscopy-updatesite/model/Oomph-task-fscopy.ecore");
 
     // Create annotations
     // http://www.eclipse.org/emf/2002/Ecore
@@ -244,7 +244,7 @@ public class FSCopyPackageImpl extends EPackageImpl implements FSCopyPackage
   {
     String source = "http://www.eclipse.org/emf/2002/Ecore";
     addAnnotation(this, source, new String[] { "schemaLocation",
-        "https://raw.githubusercontent.com/maybeec/oomph-task-fsmove/master/task-fsmove-updatesite/model/Oomph-task-fscopy.ecore" });
+        "https://raw.githubusercontent.com/maybeec/oomph-task-fscopy/master/task-fscopy-updatesite/model/Oomph-task-fscopy.ecore" });
   }
 
   /**

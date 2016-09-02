@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EPackage;
  * <!-- end-user-doc -->
  * @see com.github.maybeec.oomph.task.fscopy.FSCopyFactory
  * @model kind="package"
- *        annotation="http://www.eclipse.org/emf/2002/Ecore schemaLocation='https://raw.githubusercontent.com/maybeec/oomph-task-fsmove/master/task-fsmove-updatesite/model/Oomph-task-fscopy.ecore'"
+ *        annotation="http://www.eclipse.org/emf/2002/Ecore schemaLocation='https://raw.githubusercontent.com/maybeec/oomph-task-fscopy/master/task-fscopy-updatesite/model/Oomph-task-fscopy.ecore'"
  * @generated
  */
 public interface FSCopyPackage extends EPackage
