@@ -8,7 +8,7 @@
     <eAnnotations source="http://www.eclipse.org/oomph/setup/Enablement">
       <details key="variableName" value="p2.file.system.copy"/>
       <details key="repository" value="https://maybeec.github.io/oomph-task-fscopy/update/"/>
-      <details key="installableUnits" value="com.github.maybeec.oomph.task.fsmove.feature.feature.group"/>
+      <details key="installableUnits" value="com.github.maybeec.oomph.task.fscopy.feature.feature.group"/>
     </eAnnotations>
     <eAnnotations source="http://www.eclipse.org/oomph/setup/ValidTriggers">
       <details key="triggers" value="BOOTSTRAP MANUAL"/>
