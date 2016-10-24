@@ -9,9 +9,14 @@ import com.github.maybeec.oomph.task.fscopy.core.exceptions.FSCopyException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author sholzer
@@ -41,7 +46,7 @@ public class FSCopyUtilImpl implements FSCopyUtil
     File sourceFile = new File(source);
     try
     {
-      recursiveDirectoryCopy(sourceFile, destination);
+      fileWalkCopy(source, destination);
     }
     catch (IOException ex)
     {
@@ -95,6 +100,57 @@ public class FSCopyUtilImpl implements FSCopyUtil
     {
       LOG.logError(e.getMessage());
     }
+  }
+
+  /**
+   *
+   * @param src
+   * @param dst
+   * @throws IOException
+   * @author {@link "http://stackoverflow.com/questions/10126982/java-nio-files-copying-files"}
+   */
+  private void fileWalkCopy(String src, String dst) throws IOException
+  {
+    final Path srcDir = Paths.get(src);
+    final Path dstDir = Paths.get(dst);
+    Files.walkFileTree(srcDir, new SimpleFileVisitor<Path>()
+    {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+      {
+        return copy(file);
+      }
+
+      @Override
+      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
+      {
+        return copy(dir);
+      }
+
+      private FileVisitResult copy(Path fileOrDir) throws IOException
+      {
+        try
+        {
+          Files.copy(fileOrDir, dstDir.resolve(srcDir.relativize(fileOrDir)));
+        }
+        catch (FileAlreadyExistsException e)
+        {
+          SetupTaskLogger.getLogger().logWarning("Caught FileAlreadyExistsException for " + e.getMessage() + " Continue.");
+        }
+        return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
+      {
+        if (exc instanceof FileAlreadyExistsException)
+        {
+          SetupTaskLogger.getLogger().logWarning("Caught exc");
+          return FileVisitResult.CONTINUE;
+        }
+        throw exc;
+      }
+    });
   }
 
 }
