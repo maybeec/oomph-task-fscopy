@@ -44,6 +44,10 @@ public class FSCopyUtilImpl implements FSCopyUtil
     LOG = SetupTaskLogger.getLogger();
     LOG.logInfo("Copying " + source + " to " + destination);
     File sourceFile = new File(source);
+    if (new File(destination).mkdirs())
+    {
+      SetupTaskLogger.getLogger().log("Created destination " + destination);
+    }
     try
     {
       fileWalkCopy(source, destination);
