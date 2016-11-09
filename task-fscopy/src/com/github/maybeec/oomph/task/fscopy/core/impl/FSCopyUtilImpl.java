@@ -133,6 +133,12 @@ public class FSCopyUtilImpl implements FSCopyUtil
 
       private FileVisitResult copy(Path fileOrDir) throws IOException
       {
+
+        if (Files.exists(fileOrDir))
+        {
+          return FileVisitResult.CONTINUE;
+        }
+
         try
         {
           Files.copy(fileOrDir, dstDir.resolve(srcDir.relativize(fileOrDir)));
