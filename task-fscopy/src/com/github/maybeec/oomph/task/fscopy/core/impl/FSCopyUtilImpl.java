@@ -134,8 +134,9 @@ public class FSCopyUtilImpl implements FSCopyUtil
       private FileVisitResult copy(Path fileOrDir) throws IOException
       {
 
-        if (Files.exists(fileOrDir))
+        if (!Files.exists(fileOrDir))
         {
+          SetupTaskLogger.getLogger().logWarning("Ignored symbolic link " + fileOrDir.getFileName());
           return FileVisitResult.CONTINUE;
         }
 
