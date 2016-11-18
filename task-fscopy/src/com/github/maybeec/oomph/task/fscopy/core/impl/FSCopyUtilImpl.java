@@ -15,11 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * @author sholzer
+ * @author themetalone
  *
  */
 public class FSCopyUtilImpl implements FSCopyUtil
@@ -43,7 +42,6 @@ public class FSCopyUtilImpl implements FSCopyUtil
   {
     LOG = SetupTaskLogger.getLogger();
     LOG.logInfo("Copying " + source + " to " + destination);
-    File sourceFile = new File(source);
     if (new File(destination).mkdirs())
     {
       SetupTaskLogger.getLogger().log("Created destination " + destination);
@@ -58,60 +56,12 @@ public class FSCopyUtilImpl implements FSCopyUtil
     }
   }
 
-  private void recursiveDirectoryCopy(File source, String destination) throws IOException
-  {
-    if (source.isDirectory())
-    {
-      for (File f : source.listFiles())
-      {
-        String fileDestination = destination + File.separator + f.getName();
-        if (f.isDirectory() && f.listFiles().length > 0)
-        {
-          recursiveDirectoryCopy(f, fileDestination);
-        }
-        else
-        {
-          createPath(fileDestination);
-          Files.copy(f.toPath(), Paths.get(fileDestination), StandardCopyOption.REPLACE_EXISTING);
-          LOG.log("Copied " + f.getPath() + " to " + fileDestination);
-        }
-      }
-    }
-    else
-    {
-      createPath(destination);
-      Files.copy(source.toPath(), Paths.get(destination), StandardCopyOption.REPLACE_EXISTING);
-      LOG.log("Copied " + source.getPath() + " to " + destination);
-    }
-  }
-
-  private void createPath(String pathString)
-  {
-    File pathFile = new File(pathString);
-    LOG.log("Making path for " + pathString);
-    try
-    {
-      if (pathFile.isDirectory())
-      {
-        pathFile.mkdirs();
-      }
-      else
-      {
-        pathFile.getParentFile().mkdirs();
-      }
-    }
-    catch (Exception e)
-    {
-      LOG.logError(e.getMessage());
-    }
-  }
-
   /**
    *
    * @param src
    * @param dst
    * @throws IOException
-   * @author {@link "http://stackoverflow.com/questions/10126982/java-nio-files-copying-files"}
+   * @author {@link "http://stackoverflow.com/questions/10126982/java-nio-files-copying-files"} adapted by themetalone
    */
   private void fileWalkCopy(String src, String dst) throws IOException
   {
@@ -136,13 +86,14 @@ public class FSCopyUtilImpl implements FSCopyUtil
 
         if (!Files.exists(fileOrDir))
         {
-          SetupTaskLogger.getLogger().logWarning("Ignored symbolic link " + fileOrDir.getFileName());
+          SetupTaskLogger.getLogger().logWarning("File doesn't seem to exist: " + fileOrDir.getFileName());
           return FileVisitResult.CONTINUE;
         }
 
         try
         {
           Files.copy(fileOrDir, dstDir.resolve(srcDir.relativize(fileOrDir)));
+          SetupTaskLogger.getLogger().log(fileOrDir.toFile().getAbsolutePath() + "->" + dstDir.toFile().getAbsolutePath());
         }
         catch (FileAlreadyExistsException e)
         {
@@ -163,5 +114,4 @@ public class FSCopyUtilImpl implements FSCopyUtil
       }
     });
   }
-
 }
