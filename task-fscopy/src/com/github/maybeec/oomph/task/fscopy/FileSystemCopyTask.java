@@ -27,7 +27,7 @@ import org.eclipse.oomph.setup.SetupTask;
  * </ul>
  *
  * @see com.github.maybeec.oomph.task.fscopy.FSCopyPackage#getFileSystemCopyTask()
- * @model annotation="http://www.eclipse.org/oomph/setup/Enablement variableName='p2.file.system.copy' repository='https://maybeec.github.io/oomph-task-fscopy/update/' installableUnits='com.github.maybeec.oomph.task.fsmove.feature.feature.group'"
+ * @model annotation="http://www.eclipse.org/oomph/setup/Enablement variableName='p2.file.system.copy' repository='https://maybeec.github.io/oomph-task-fscopy/update/' installableUnits='com.github.maybeec.oomph.task.fscopy.feature.feature.group'"
  *        annotation="http://www.eclipse.org/oomph/setup/ValidTriggers triggers='BOOTSTRAP MANUAL'"
  * @generated
  */

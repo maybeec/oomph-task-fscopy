@@ -75,8 +75,8 @@ public class FSCopyPackageImpl extends EPackageImpl implements FSCopyPackage
     }
 
     // Obtain or create and register package
-    FSCopyPackageImpl theFSCopyPackage = (FSCopyPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof FSCopyPackageImpl
-        ? EPackage.Registry.INSTANCE.get(eNS_URI) : new FSCopyPackageImpl());
+    FSCopyPackageImpl theFSCopyPackage = (FSCopyPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof FSCopyPackageImpl ? EPackage.Registry.INSTANCE
+        .get(eNS_URI) : new FSCopyPackageImpl());
 
     isInited = true;
 
@@ -257,7 +257,7 @@ public class FSCopyPackageImpl extends EPackageImpl implements FSCopyPackage
   {
     String source = "http://www.eclipse.org/oomph/setup/Enablement";
     addAnnotation(fileSystemCopyTaskEClass, source, new String[] { "variableName", "p2.file.system.copy", "repository",
-        "https://maybeec.github.io/oomph-task-fscopy/update/", "installableUnits", "com.github.maybeec.oomph.task.fsmove.feature.feature.group" });
+        "https://maybeec.github.io/oomph-task-fscopy/update/", "installableUnits", "com.github.maybeec.oomph.task.fscopy.feature.feature.group" });
   }
 
   /**
