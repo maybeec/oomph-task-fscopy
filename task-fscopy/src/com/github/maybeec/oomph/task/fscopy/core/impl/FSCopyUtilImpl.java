@@ -58,25 +58,26 @@ public class FSCopyUtilImpl implements FSCopyUtil {
    */
   private void fileWalkCopy(String src, String dst) throws IOException {
 
-    final Path srcDir = Paths.get(src);
+    final Path srcDir = Paths.get(src).toRealPath();
+    if (!srcDir.equals(Paths.get(src))) {
+      SetupTaskLogger.getLogger().log("Resolved " + src + " to " + srcDir.toString());
+    }
     final Path dstDir = Paths.get(dst);
     Files.walkFileTree(srcDir, new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-        return copy(file);
-      }
-
-      @Override
-      public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-
-        try {
-          dir = dir.toRealPath();
-        } catch (IOException e) {
-          SetupTaskLogger.getLogger()
-              .logWarning("Could not resolve path to real path for: " + dir.toString() + ":" + e.getMessage());
+        Path toCopy = file;
+        if (Files.isSymbolicLink(file)) {
+          try {
+            toCopy = file.toRealPath();
+          } catch (IOException e) {
+            SetupTaskLogger.getLogger()
+                .logWarning("Could not resolve symbolic " + file.toString() + ". Skipping this file");
+            return FileVisitResult.CONTINUE;
+          }
         }
-        return copy(dir);
+        return copy(toCopy);
       }
 
       private FileVisitResult copy(Path fileOrDir) throws IOException {
@@ -85,11 +86,18 @@ public class FSCopyUtilImpl implements FSCopyUtil {
           SetupTaskLogger.getLogger().logWarning("File doesn't seem to exist: " + fileOrDir.getFileName());
           return FileVisitResult.CONTINUE;
         }
-
+        if (Files.isDirectory(fileOrDir)) {
+          return FileVisitResult.CONTINUE;
+        } else {
+          if (dstDir.resolve(srcDir.relativize(fileOrDir)).getParent().toFile().mkdirs()) {
+            SetupTaskLogger.getLogger()
+                .log("Made " + dstDir.resolve(srcDir.relativize(fileOrDir)).getParent().toFile().getAbsolutePath());
+          }
+        }
         try {
+          SetupTaskLogger.getLogger().log(
+              srcDir.relativize(fileOrDir).toString() + "->" + dstDir.resolve(srcDir.relativize(fileOrDir)).toString());
           Files.copy(fileOrDir, dstDir.resolve(srcDir.relativize(fileOrDir)));
-          SetupTaskLogger.getLogger()
-              .log(fileOrDir.toFile().getAbsolutePath() + "->" + dstDir.toFile().getAbsolutePath());
         } catch (FileAlreadyExistsException e) {
           SetupTaskLogger.getLogger()
               .logWarning("Caught FileAlreadyExistsException for " + e.getMessage() + " Continue.");
