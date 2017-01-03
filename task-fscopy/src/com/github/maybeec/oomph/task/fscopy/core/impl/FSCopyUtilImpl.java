@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -60,47 +61,36 @@ public class FSCopyUtilImpl implements FSCopyUtil {
 
     final Path srcDir = Paths.get(src).toRealPath();
     if (!srcDir.equals(Paths.get(src))) {
-      SetupTaskLogger.getLogger().log("Resolved " + src + " to " + srcDir.toString());
+      SetupTaskLogger.getLogger().logInfo("Resolved " + src + " to " + srcDir.toString());
     }
     final Path dstDir = Paths.get(dst);
     Files.walkFileTree(srcDir, new SimpleFileVisitor<Path>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-        Path toCopy = file;
-        if (Files.isSymbolicLink(file)) {
-          try {
-            toCopy = file.toRealPath();
-          } catch (IOException e) {
-            SetupTaskLogger.getLogger()
-                .logWarning("Could not resolve symbolic " + file.toString() + ". Skipping this file");
-            return FileVisitResult.CONTINUE;
-          }
-        }
-        return copy(toCopy);
-      }
-
-      private FileVisitResult copy(Path fileOrDir) throws IOException {
-
-        if (!Files.exists(fileOrDir)) {
-          SetupTaskLogger.getLogger().logWarning("File doesn't seem to exist: " + fileOrDir.getFileName());
+        if (!Files.exists(file)) {
+          SetupTaskLogger.getLogger().logWarning("File doesn't seem to exist: " + file.getFileName());
           return FileVisitResult.CONTINUE;
         }
-        if (Files.isDirectory(fileOrDir)) {
+        if (Files.isDirectory(file)) {
+          if (Files.isSymbolicLink(file)) {
+            SetupTaskLogger.getLogger().log("copy sym " + srcDir.relativize(file).toString() + "->"
+                + dstDir.resolve(srcDir.relativize(file)).toString());
+            Files.copy(file, dstDir.resolve(srcDir.relativize(file)), LinkOption.NOFOLLOW_LINKS);
+          }
           return FileVisitResult.CONTINUE;
         } else {
-          if (dstDir.resolve(srcDir.relativize(fileOrDir)).getParent().toFile().mkdirs()) {
+          if (dstDir.resolve(srcDir.relativize(file)).getParent().toFile().mkdirs()) {
             SetupTaskLogger.getLogger()
-                .log("Made " + dstDir.resolve(srcDir.relativize(fileOrDir)).getParent().toFile().getAbsolutePath());
+                .log("create " + dstDir.resolve(srcDir.relativize(file)).getParent().toFile().getAbsolutePath());
           }
         }
         try {
           SetupTaskLogger.getLogger().log(
-              srcDir.relativize(fileOrDir).toString() + "->" + dstDir.resolve(srcDir.relativize(fileOrDir)).toString());
-          Files.copy(fileOrDir, dstDir.resolve(srcDir.relativize(fileOrDir)));
+              "copy " + srcDir.relativize(file).toString() + "->" + dstDir.resolve(srcDir.relativize(file)).toString());
+          Files.copy(file, dstDir.resolve(srcDir.relativize(file)));
         } catch (FileAlreadyExistsException e) {
-          SetupTaskLogger.getLogger()
-              .logWarning("Caught FileAlreadyExistsException for " + e.getMessage() + " Continue.");
+          SetupTaskLogger.getLogger().logWarning("File already exists " + e.getMessage() + " Continue.");
         }
         return FileVisitResult.CONTINUE;
       }
